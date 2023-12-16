@@ -1,0 +1,145 @@
+<main class="main pt-150">
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-25">
+                        <h4>Add Address</h4>
+                    </div>
+                    <div class="row pt-4">
+                        
+                        <form action="/addAddress"  method="post" class="address-form">
+                            <div class="row">
+                                <!-- Name -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" name="user_name" required />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="street">Address</label>
+                                        <input type="text" class="form-control" id="address" name="address"required />
+                                    </div>
+                                </div>
+
+                                <!-- City and State -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="city">Town</label>
+                                        <input type="text" class="form-control" id="city" name="town" required />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="state">State</label>
+                                        <input type="text" class="form-control" id="state" name="state" required />
+                                    </div>
+                                </div>
+
+                                <!-- Pin Code -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pincode">Post code</label>
+                                        <input type="number" class="form-control" id="pincode" name="pincode"  required />
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mobile">Mobile Number</label>
+                                        <input type="number" class="form-control" id="mobile" name="phone" 
+                                         required />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Add Button -->
+                            <div class="button-box">
+                                <a href="/address"><button type="submit" class="btn btn-primary my-3">Add Address</button>
+                                </a>
+                            </div>
+
+
+                        </form>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('myForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const address = document.getElementById('address').value;
+        const town = document.getElementById('town').value;
+        const state = document.getElementById('state').value;
+        const pincode = document.getElementById('postCode').value;
+        const mobile = document.getElementById('mobile').value;
+
+
+
+        
+        const formData = {
+            name,
+            address,
+            town,
+            state,
+            postCode,
+            mobile
+        };
+
+
+        
+
+        Swal.fire({
+            title: "Add Address ?",
+            text: "Are you sure you want to add this Address",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "No, Cancel",
+            confirmButtonText: "Yes, Add Address",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/addAddress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            Swal.fire({
+                                title: "Address Added",
+                                text: "Address Added Successfully",
+                                icon: "success",
+                            }).then(() => {
+                                location.assign('/address')
+                            });
+                        } else if (data.error) {
+                            alert(data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        })
+    });
+</script>

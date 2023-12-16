@@ -1,0 +1,193 @@
+
+  <div class="container">
+    <h2 mt-2>Add Product</h2>
+
+    <form action="/admin/product/addProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+      <div class="card">
+        <div class="card-body">
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>1. General info</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label class="form-label">Product title</label>
+                <input type="text" placeholder="Type here" name="title" id="title" class="form-control">
+                <div id="title-error" class="text-danger"></div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea placeholder="Type here" class="form-control" name="description" type="text"
+                  id="description" rows="4"></textarea>
+                <div id="description-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>2. Category</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <select class="form-select" name="categoryName" id="category" required>
+                  <option value="">Select category</option>
+                  <% catList.forEach(category=> { %>
+                    <option value="<%= category?._id %>">
+                        <%= category.categoryName %>
+                    </option>
+                    <% }) %>
+                </select>
+                <div id="category-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <h6>3. Pricing</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label for="Productprice">Product Price</label>
+                <input type="number" placeholder="₹" name="productPrice" id="productPrice" class="form-control">
+                <div id="productPrice-error" class="text-danger"></div>
+              </div>
+              <div class="mb-4">
+                <label for="Saleprice">Sale Price</label>
+                <input type="number" placeholder="₹" name="salePrice" id="salePrice" class="form-control">
+                <div id="salePrice-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <h6>4. Units</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label for="Quantity">Quantity</label>
+                <input type="number" placeholder="No's" name="quantity" id="quantity" class="form-control">
+                <div id="quantity-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>5. Media</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="card p-md-5 p-2 me-md-5">
+                <h5>Choose product images </h5>
+                <span class="fw-normal mb-4 text-success">file supports only: jpeg,jpg,png,webp</span>
+                <span class="fw-bold">Select the Primary Image</span>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg" class="form-control FilUploader"
+                  name="primaryImage" id="primaryImage" class="mb-3" multiple required />
+                <div id="primaryImage-error" class="text-danger"></div>
+                <span class="fw-bold">Select secondary images <br> <br>
+                  <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg" class="form-control FilUploader"
+                    id="secondaryImages" name="secondaryImage" class="mb-3" accept=".jpg,.jpeg,.png,.webp,.svg"
+                    multiple required /><br>
+                <div id="secondaryImages-error" class="text-danger"></div>
+              </div>
+              <button type="submit" class="btn btn-primary mb-4 mt-2 ">Add Product</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      var title = document.getElementById('title').value;
+      var description = document.getElementById('description').value;
+      var productPrice = document.getElementById('productPrice').value;
+      var salePrice = document.getElementById('salePrice').value;
+      var quantity = document.getElementById('quantity').value;
+      var primaryImage = document.getElementById('primaryImage').value;
+      var secondaryImages = document.getElementById('secondaryImages').value;
+
+      // Function to display error messages
+      function displayError(inputId, errorMessage) {
+        var errorElement = document.getElementById(inputId + '-error');
+        if (errorMessage) {
+          errorElement.textContent = errorMessage;
+        } else {
+          errorElement.textContent = ''; // Clear the error message
+        }
+      }
+
+      // Validate Title
+      if (title.trim() === "") {
+        displayError('title', 'Please enter a product title');
+        return false;
+      } else {
+        displayError('title', '');
+      }
+
+      // Validate description
+      if (description.trim() === "") {
+        displayError('description', 'Please enter a valid description');
+        return false;
+      } else {
+        displayError('description', '');
+      }
+
+      // Validate Category
+      var category = document.getElementById('category').value;
+      if (category === "") {
+        displayError('category', 'Please select a category');
+        return false;
+      } else {
+        displayError('category', '');
+      }
+
+     // Validate Product Price
+     if ((productPrice) <= 0) {
+      displayError('productPrice', 'Please enter a valid product price');
+      return false;
+    } else {
+      displayError('productPrice', '');
+    }
+
+
+      // Validate Sale Price
+    if ((salePrice) <= 0) {
+      displayError('salePrice', 'Please enter a valid sale price');
+      return false;
+    } else {
+      displayError('salePrice', '');
+    }
+
+      // Validate Quantity
+      if (quantity<= 0 ) {
+      displayError('quantity', 'Please enter a valid quantity ');
+      return false;
+    } else {
+      displayError('quantity', '');
+    }
+
+      // Validate Primary Image
+      if (primaryImage.trim() === "") {
+        displayError('primaryImage', 'Please select a primary image');
+        return false;
+      } else {
+        displayError('primaryImage', '');
+      }
+
+      // Validate at least one Secondary Image
+      if (secondaryImages.trim() === "") {
+        displayError('secondaryImages', 'Please select at least one secondary image');
+        return false;
+      } else {
+        displayError('secondaryImages', '');
+      }
+
+     
+
+      return true;
+    }
+  </script>
+

@@ -1,0 +1,117 @@
+<!-- orderDetails.ejs -->
+
+
+
+  <h1>Order Details</h1>
+
+  <% if (orderDetails) { %>
+
+    <% orderDetails.products.forEach((product) => { %>
+      <div class="card">
+        <div class="card-header">
+          <h4>Product: <%= product.product.title %></h4>
+        </div>
+        <div class="card-body">
+          <img src="/admin/uploads/<%= product.product.primaryImage[0].name %>" alt="Product Image" class="product-image">
+
+          <div class="order-details">
+            <p>Quantity: <%= product.quantity %></p>
+            <p>Price: <%= product.price %></p>
+            <p>Total: <%= product.total %></p>
+            <!-- Add other product details as needed -->
+
+            <!-- Add a link to view individual product details if necessary -->
+            <a href="/cancelOrder/<%= orderDetails._id %>">Cancel Order</a>
+
+          </div>
+        </div>
+      </div>
+    <% }) %>
+
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <p>Order Number: <%= orderDetails._id %></p>
+      <p>Date: <%= orderDetails.orderDate.toLocaleDateString() %></p>
+      <p>Total: <%= orderDetails.grandTotal %></p>
+      <p>Status: <%= orderDetails.status %></p>
+      <!-- Add other order details as needed -->
+    </div>
+
+  <% } else { %>
+
+    <p>No order details available.</p>
+
+  <% } %>
+
+ 
+
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 50px;
+        color: #333;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+    }
+
+
+    .card {
+        width: 70%;
+        margin: 20px auto;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+
+    .card-header {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+
+    .order-details {
+        flex-grow: 1;
+    }
+
+    .order-summary {
+        width: 70%;
+        margin: 20px auto;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        padding: 20px;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+
+    a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+</style>

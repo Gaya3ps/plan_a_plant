@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product</title>
+</head>
+
+<body>
+  <div class="container">
+    <h2 mt-2>Edit Product</h2>
+
+    <form action="/admin/product/editProduct/<%= product._id %>" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+      <div class="card">
+        <div class="card-body">
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>1. General info</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label class="form-label">Product title</label>
+                <input type="text" placeholder="Type here" name="title" id="title" class="form-control" value="<%= product.title %>">
+                <div id="title-error" class="text-danger"></div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Description</label>
+                <input  placeholder="Type here" class="form-control" name="description" type="text" value="<%= product.description %>"
+                  id="description" rows="4">
+                <div id="description-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>2. Category</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <select class="form-select" name="categoryName" id="category" required>
+                  <option value="">Select category</option>
+                  <% catList.forEach(category=> { %>
+                    <option value="<%= category?._id %>">
+                        <%= category.categoryName %>
+                    </option>
+                    <% }) %>
+                </select>
+                <div id="category-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <h6>3. Pricing</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label for="Productprice">Product Price</label>
+                <input type="number" placeholder="₹" name="productPrice" id="productPrice" class="form-control" value="<%= product.productPrice %>">
+                <div id="productPrice-error" class="text-danger"></div>
+              </div>
+              <div class="mb-4">
+                <label for="Saleprice">Sale Price</label>
+                <input type="number" placeholder="₹" name="salePrice" id="salePrice" class="form-control" value="<%= product.salePrice %>">
+                <div id="salePrice-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <h6>4. Units</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="mb-4">
+                <label for="Quantity">Quantity</label>
+                <input type="number" placeholder="No's" name="quantity" id="quantity" class="form-control" value="<%= product.quantity %>">
+                <div id="quantity-error" class="text-danger"></div>
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4 mt-0">
+          <div class="row">
+            <div class="col-md-3">
+              <h6>5. Media</h6>
+            </div>
+            <div class="col-md-9">
+              <div class="card p-md-5 p-2 me-md-5">
+                <h5>Choose product images </h5>
+                <span class="fw-normal mb-4 text-success">file supports only: jpeg,jpg,png,webp</span>
+                <span class="fw-bold">Select the Primary Image</span>
+                <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg" class="form-control FilUploader"
+                  name="primaryImage" id="primaryImage" class="mb-3"  />
+                  <input type="hidden" name="existingPrimaryImage" value="<%= product.primaryImage[0].name %>" />
+
+                  <div class="col-md-6 mt-2 mr-5">
+                    <% product.primaryImage.forEach(image => { %>
+                      <img src="/admin/uploads/<%= image?.name; %>" class="max-size-image" alt="<%= image.name %>">
+                    <% }); %>
+                  </div>
+
+                
+                  <div id="primaryImage-error" class="text-danger"></div>
+                <span class="fw-bold">Select secondary images <br> <br>
+                  <input type="file" accept=".jpg,.jpeg,.png,.webp,.svg" class="form-control FilUploader"
+                    id="secondaryImages" name="secondaryImage" class="mb-3" accept=".jpg,.jpeg,.png,.webp,.svg"
+                   /><br>
+
+                   <input type="hidden" name="idSecondaryImage" value="<%= product.secondaryImages.name  %>">
+
+                    <div class="col-md-6 mt-2 mr-5">
+                    <% product.secondaryImages.forEach(image => { %>
+                      <img src="/admin/uploads/<%= image?.name %>" class="max-size-image mb-3" alt="<%= image.name %>">
+                      <% }); %>
+                    </div>
+
+                <div id="secondaryImages-error" class="text-danger"></div>
+              </div>
+              <button type="submit" class="btn btn-primary mb-4 mt-2 ">Update Product</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .max-size-image {
+      max-width: 150px;
+      max-height: 150px;
+      width: auto;
+      height: auto;
+    }
+  </style>
+
+  <script>
+    function validateForm() {
+      var title = document.getElementById('title').value;
+      var description = document.getElementById('description').value;
+      var productPrice = document.getElementById('productPrice').value;
+      var salePrice = document.getElementById('salePrice').value;
+      var quantity = document.getElementById('quantity').value;
+      // var primaryImage = document.getElementById('primaryImage').value;
+      // var secondaryImages = document.getElementById('secondaryImages').value;
+  
+      // Function to display validation messages
+      function validateField(inputId, isValid, validationMessage) {
+        var inputField = document.getElementById(inputId);
+        var validationText = inputField.nextElementSibling;
+        if (!isValid) {
+          inputField.classList.add('is-invalid');
+          validationText.textContent = validationMessage;
+          validationText.style.color = 'red';
+          return false;
+        } else {
+          inputField.classList.remove('is-invalid');
+          validationText.textContent = '';
+          return true;
+        }
+      }
+  
+      // Validate Title
+      var isValidTitle = title.trim() !== "";
+      var titleValidationMessage = "Please enter a product title";
+      if (!validateField('title', isValidTitle, titleValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Description
+      var isValidDescription = description.trim() !== "";
+      var descriptionValidationMessage = "Please enter a valid description";
+      if (!validateField('description', isValidDescription, descriptionValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Category
+      var category = document.getElementById('category').value;
+      var isValidCategory = category !== "";
+      var categoryValidationMessage = "Please select a category";
+      if (!validateField('category', isValidCategory, categoryValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Product Price
+      var isValidProductPrice = !isNaN(productPrice) && parseFloat(productPrice) > 0;
+      var productPriceValidationMessage = "Please enter a valid product price";
+      if (!validateField('productPrice', isValidProductPrice, productPriceValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Sale Price
+      var isValidSalePrice = !isNaN(salePrice) && parseFloat(salePrice) > 0;
+      var salePriceValidationMessage = "Please enter a valid sale price";
+      if (!validateField('salePrice', isValidSalePrice, salePriceValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Quantity
+      var isValidQuantity = !isNaN(quantity) && parseInt(quantity) > 0;
+      var quantityValidationMessage = "Please enter a valid quantity";
+      if (!validateField('quantity', isValidQuantity, quantityValidationMessage)) {
+        return false;
+      }
+  
+      // Validate Primary Image
+      // var isValidPrimaryImage = primaryImage.trim() !== "";
+      // var primaryImageValidationMessage = "Please select a primary image";
+      // if (!validateField('primaryImage', isValidPrimaryImage, primaryImageValidationMessage)) {
+      //   return false;
+      // }
+  
+      // Validate at least one Secondary Image
+      // var isValidSecondaryImages = secondaryImages.trim() !== "";
+      // var secondaryImagesValidationMessage = "Please select at least one secondary image";
+      // if (!validateField('secondaryImages', isValidSecondaryImages, secondaryImagesValidationMessage)) {
+      //   return false;
+      // }
+  
+      // If all validations pass, the form is valid
+      return true;
+    }
+  </script>
+  
